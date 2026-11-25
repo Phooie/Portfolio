@@ -796,104 +796,93 @@ a:focus-visible {
    NEW 2-COLUMN GRID LAYOUT & MEDIA FIXES
    ========================================================= */
 
-/* 1. Grid for Projects (2 Columns) */
+/* 1. Main Projects Grid: 2 Columns */
 .projects {
-    display: grid;
+    display: grid !important;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
-    align-items: stretch; /* Makes cards in the same row equal height */
+    align-items: stretch; /* Makes sure both cards in a row are the exact same height */
 }
 
+/* Make the section heading span across both columns */
 .projects .heading {
-    grid-column: 1 / -1; /* Heading spans across both columns */
+    grid-column: 1 / -1;
 }
 
-/* 2. Card Layout (Flexbox to handle side-by-side images) */
+/* 2. Project Card Internals (Flexbox for side-by-side images) */
 .project-card {
-    display: flex !important; /* Override previous display: block */
+    display: flex !important;
     flex-wrap: wrap;
-    flex-direction: row !important; /* Ensure horizontal layout for media */
-    margin-bottom: 0 !important; /* Rely on grid gap instead of margin */
-    height: 100%;
-    align-content: flex-start;
+    flex-direction: row !important;
+    margin-bottom: 0 !important; /* Removing old margin, relying on the grid gap */
+    height: 100%; /* Fills the grid cell completely */
+    align-content: flex-start; /* Pushes media to the top, text below it */
 }
 
-/* Reset the reverse class since we are in a grid now */
+/* Override the old "reverse" class so it doesn't break the grid layout */
 .project-card.reverse {
     flex-direction: row !important;
 }
-.project-card.reverse .project-image,
-.project-card.reverse .project-content,
-.project-card.reverse > video,
-.project-card.reverse > .project-media {
-    order: initial !important;
-}
 
-/* 3. Media Handling */
-/* Force multiple images to sit side-by-side (50% each) */
-.project-card > img {
-    flex: 0 0 50%;
-    width: 50%;
-    height: 250px;
+/* 3. Media Sizing (Images & Videos) */
+/* Force ALL direct media elements to have the exact same uniform height */
+.project-card > img,
+.project-card > video,
+.project-card > .project-media,
+.project-card > .project-image {
+    height: 240px; /* Uniform height for media */
     object-fit: cover;
+    display: block;
+    margin: 0;
+    border-bottom: 1px solid var(--line);
 }
 
-/* If a project happens to only have ONE image, make it full width */
+/* If a card has a single video, or a single image, it takes full width */
+.project-card > video,
+.project-card > .project-media,
+.project-card > .project-image,
 .project-card > img:only-of-type {
     flex: 0 0 100%;
     width: 100%;
 }
 
-/* Video and Video Wrappers take full width */
-.project-card > video,
-.project-card > .project-image,
-.project-card > .project-media {
-    flex: 0 0 100%;
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    background: #0a1230;
+/* If a card has TWO images (like SSMS and Campus), they share 50% width side-by-side */
+.project-card > img {
+    flex: 0 0 50%;
+    width: 50%;
 }
 
-/* Ensure nested video in .project-media fills the wrapper */
-.project-card > .project-media video {
+/* Ensure video inside wrapper fills the wrapper */
+.project-card > .project-media video,
+.project-card > .project-image video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
 /* 4. Content Area */
-.project-card .project-content {
-    flex: 1 0 100%; /* Force content to take full width and fill remaining height */
+.project-card > .project-content {
+    flex: 1 1 100%; /* Takes full width and fills remaining vertical space */
     width: 100%;
     padding: 24px !important;
     display: flex;
     flex-direction: column;
-    height: auto;
 }
 
-/* Push the tech tags to the bottom of the card */
+/* Push the tech tags to the bottom so all cards align perfectly */
 .project-card .tech-tags {
     margin-top: auto;
-    padding-top: 15px;
+    padding-top: 16px;
 }
 
-/* 5. Make the Publication Card span both columns (in Achievements section) */
+/* 5. Make the Publication Card span both columns */
 .publication-card {
     grid-column: 1 / -1;
 }
 
-/* 6. Mobile Responsive: Stack to 1 column */
+/* 6. Mobile Responsive: Stack to 1 column on tablets/phones */
 @media (max-width: 1024px) {
     .projects {
-        grid-template-columns: 1fr;
-    }
-    
-    .project-card > img,
-    .project-card > video,
-    .project-card > .project-image,
-    .project-card > .project-media {
-        height: 220px; /* Slightly smaller media on mobile */
+        grid-template-columns: 1fr; /* Single column on smaller screens */
     }
 }
